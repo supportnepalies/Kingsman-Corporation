@@ -1,0 +1,297 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Base user account profile",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["client", "applicant", "admin"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Trusted administrative user lookup",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "ClientProfile": {
+      "title": "ClientProfile",
+      "description": "Private profile for registered client seeking companionship",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 80 },
+        "age": { "type": "integer" },
+        "city": { "type": "string", "maxLength": 100 },
+        "photoUrl": { "type": "string", "maxLength": 1000 },
+        "shortIntro": { "type": "string", "maxLength": 1000 },
+        "interests": { "type": "array" },
+        "preferredAgeRange": { "type": "string", "maxLength": 50 },
+        "preferredCity": { "type": "string", "maxLength": 100 },
+        "languages": { "type": "array" },
+        "availability": { "type": "string", "maxLength": 200 },
+        "profileVisibility": { "type": "string", "enum": ["registered_only", "private"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "displayName", "city"]
+    },
+    "CompanionApplication": {
+      "title": "CompanionApplication",
+      "description": "Private application from prospective companions for admin review",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "fullName": { "type": "string", "maxLength": 120 },
+        "displayName": { "type": "string", "maxLength": 80 },
+        "email": { "type": "string", "format": "email", "maxLength": 120 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "city": { "type": "string", "maxLength": 100 },
+        "isAgeConfirmed": { "type": "boolean" },
+        "languages": { "type": "array" },
+        "interests": { "type": "array" },
+        "shortIntro": { "type": "string", "maxLength": 1500 },
+        "availability": { "type": "string", "maxLength": 500 },
+        "experience": { "type": "string", "maxLength": 2000 },
+        "profilePhotos": { "type": "array" },
+        "applicationStatement": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "fullName", "displayName", "email", "city", "isAgeConfirmed", "status"]
+    },
+    "CompanionProfile": {
+      "title": "CompanionProfile",
+      "description": "Public companion profile published and curated by Kingsman Corporation administration",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string", "maxLength": 80 },
+        "age": { "type": "integer" },
+        "city": { "type": "string", "maxLength": 100 },
+        "photoUrl": { "type": "string", "maxLength": 1000 },
+        "gallery": { "type": "array" },
+        "bio": { "type": "string", "maxLength": 3000 },
+        "languages": { "type": "array" },
+        "interests": { "type": "array" },
+        "availability": { "type": "string", "maxLength": 300 },
+        "profileType": { "type": "string", "maxLength": 60 },
+        "isPublished": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["displayName", "age", "city", "photoUrl", "bio", "isPublished"]
+    },
+    "BookingRequest": {
+      "title": "BookingRequest",
+      "description": "Lawful companionship booking requests routed solely through Kingsman Corporation admin",
+      "type": "object",
+      "properties": {
+        "referenceNumber": { "type": "string", "maxLength": 32 },
+        "clientId": { "type": "string", "maxLength": 128 },
+        "clientDisplayName": { "type": "string", "maxLength": 80 },
+        "clientEmail": { "type": "string", "format": "email", "maxLength": 120 },
+        "companionId": { "type": "string", "maxLength": 128 },
+        "companionDisplayName": { "type": "string", "maxLength": 80 },
+        "preferredDate": { "type": "string", "maxLength": 50 },
+        "preferredTime": { "type": "string", "maxLength": 50 },
+        "city": { "type": "string", "maxLength": 100 },
+        "message": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["pending", "approved", "completed", "cancelled"] },
+        "adminNotes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["referenceNumber", "clientId", "companionId", "preferredDate", "status"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Secure client to admin communication message",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string", "maxLength": 128 },
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 80 },
+        "senderRole": { "type": "string", "enum": ["client", "admin"] },
+        "recipientId": { "type": "string", "maxLength": 128 },
+        "content": { "type": "string", "maxLength": 3000 },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["conversationId", "senderId", "senderRole", "recipientId", "content"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notifications for users and administrators",
+      "type": "object",
+      "properties": {
+        "recipientId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "message": { "type": "string", "maxLength": 1000 },
+        "link": { "type": "string", "maxLength": 300 },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["recipientId", "title", "message"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Safety reports and moderation requests",
+      "type": "object",
+      "properties": {
+        "reporterId": { "type": "string", "maxLength": 128 },
+        "reportedType": { "type": "string", "enum": ["profile", "message", "other"] },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "reason": { "type": "string", "maxLength": 200 },
+        "details": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["new", "under_review", "action_taken", "closed"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["reporterId", "reportedType", "targetId", "reason", "status"]
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "Client support requests",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "maxLength": 120 },
+        "referenceNumber": { "type": "string", "maxLength": 50 },
+        "category": { "type": "string", "maxLength": 60 },
+        "message": { "type": "string", "maxLength": 3000 },
+        "status": { "type": "string", "enum": ["new", "open", "resolved"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["name", "email", "category", "message", "status"]
+    },
+    "PaymentPlaceholder": {
+      "title": "PaymentPlaceholder",
+      "description": "Architecture record placeholder for compliant platform fees and services",
+      "type": "object",
+      "properties": {
+        "paymentId": { "type": "string", "maxLength": 100 },
+        "clientId": { "type": "string", "maxLength": 128 },
+        "clientEmail": { "type": "string", "format": "email", "maxLength": 120 },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "status": { "type": "string", "enum": ["pending", "completed", "refunded"] },
+        "description": { "type": "string", "maxLength": 500 },
+        "date": { "type": "string" }
+      },
+      "required": ["paymentId", "clientId", "amount", "status"]
+    },
+    "MediaItem": {
+      "title": "MediaItem",
+      "description": "Admin media asset library items",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 120 },
+        "url": { "type": "string", "maxLength": 1000 },
+        "type": { "type": "string", "enum": ["image", "video"] },
+        "category": { "type": "string", "maxLength": 60 },
+        "uploadedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "url", "type", "category"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Genuine verified client companionship experience reviews curated by admin",
+      "type": "object",
+      "properties": {
+        "clientName": { "type": "string", "maxLength": 80 },
+        "city": { "type": "string", "maxLength": 100 },
+        "quote": { "type": "string", "maxLength": 1000 },
+        "rating": { "type": "integer" },
+        "companionName": { "type": "string", "maxLength": 80 },
+        "date": { "type": "string" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["clientName", "city", "quote", "rating", "isActive"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global website content and contact configuration editable by admin",
+      "type": "object",
+      "properties": {
+        "businessEmail": { "type": "string", "maxLength": 120 },
+        "supportEmail": { "type": "string", "maxLength": 120 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "businessAddress": { "type": "string", "maxLength": 200 },
+        "businessHours": { "type": "string", "maxLength": 100 },
+        "heroVideoUrl": { "type": "string", "maxLength": 1000 },
+        "heroFallbackImg": { "type": "string", "maxLength": 1000 },
+        "heroHeadline": { "type": "string", "maxLength": 150 },
+        "heroSubheadline": { "type": "string", "maxLength": 300 }
+      },
+      "required": ["businessEmail", "supportEmail"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Registered user accounts"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Admin identity documents for secure RBAC verification"
+    },
+    "/clientProfiles/{profileId}": {
+      "schema": { "$ref": "#/entities/ClientProfile" },
+      "description": "Private client profile details"
+    },
+    "/companionApplications/{applicationId}": {
+      "schema": { "$ref": "#/entities/CompanionApplication" },
+      "description": "Companion applications submitted for review"
+    },
+    "/companionProfiles/{companionId}": {
+      "schema": { "$ref": "#/entities/CompanionProfile" },
+      "description": "Public companion profiles curated and published by admin"
+    },
+    "/bookingRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/BookingRequest" },
+      "description": "Client companionship booking requests"
+    },
+    "/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Secure client to admin communication thread"
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "In-app notifications"
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/Report" },
+      "description": "User safety moderation reports"
+    },
+    "/supportTickets/{ticketId}": {
+      "schema": { "$ref": "#/entities/SupportTicket" },
+      "description": "Support inquiries"
+    },
+    "/payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/PaymentPlaceholder" },
+      "description": "Platform payment records"
+    },
+    "/media/{mediaId}": {
+      "schema": { "$ref": "#/entities/MediaItem" },
+      "description": "Admin media library assets"
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": { "$ref": "#/entities/Testimonial" },
+      "description": "Genuine testimonials"
+    },
+    "/siteSettings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Global website content configuration"
+    }
+  }
+}

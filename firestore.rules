@@ -1,0 +1,179 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == 'onlyindiankitchen@gmail.com'
+      );
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isValidId(userId) && isOwner(userId) &&
+        incoming().keys().hasAll(['email', 'role']) &&
+        incoming().email is string && incoming().email.size() <= 120 &&
+        incoming().role in ['client', 'applicant', 'admin'];
+      allow update: if isValidId(userId) && (isAdmin() || (isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['updatedAt'])));
+      allow delete: if isAdmin();
+    }
+
+    // Admins collection
+    match /admins/{adminId} {
+      allow read, write: if isValidId(adminId) && isAdmin();
+    }
+
+    // Client profiles
+    match /clientProfiles/{profileId} {
+      allow get: if isValidId(profileId) && (isOwner(profileId) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isValidId(profileId) && isOwner(profileId) &&
+        incoming().uid == request.auth.uid &&
+        incoming().displayName is string && incoming().displayName.size() <= 80 &&
+        incoming().city is string && incoming().city.size() <= 100;
+      allow update: if isValidId(profileId) && (isOwner(profileId) || isAdmin()) &&
+        incoming().uid == existing().uid &&
+        incoming().displayName is string && incoming().displayName.size() <= 80;
+      allow delete: if isValidId(profileId) && (isOwner(profileId) || isAdmin());
+    }
+
+    // Companion Applications
+    match /companionApplications/{applicationId} {
+      allow get: if isValidId(applicationId) && (isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid));
+      allow list: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isValidId(applicationId) && isSignedIn() &&
+        incoming().uid == request.auth.uid &&
+        incoming().status == 'pending' &&
+        incoming().fullName is string && incoming().fullName.size() <= 120 &&
+        incoming().displayName is string && incoming().displayName.size() <= 80 &&
+        incoming().city is string && incoming().city.size() <= 100;
+      allow update: if isValidId(applicationId) && isAdmin();
+      allow delete: if isValidId(applicationId) && isAdmin();
+    }
+
+    // Companion Profiles (Public curated profiles)
+    match /companionProfiles/{companionId} {
+      allow get: if isValidId(companionId) && (resource.data.isPublished == true || isAdmin());
+      allow list: if resource.data.isPublished == true || isAdmin();
+      allow create, update, delete: if isValidId(companionId) && isAdmin();
+    }
+
+    // Booking Requests
+    match /bookingRequests/{requestId} {
+      allow get: if isValidId(requestId) && (isAdmin() || (isSignedIn() && resource.data.clientId == request.auth.uid));
+      allow list: if isAdmin() || (isSignedIn() && resource.data.clientId == request.auth.uid);
+      allow create: if isValidId(requestId) && isSignedIn() &&
+        incoming().clientId == request.auth.uid &&
+        incoming().status == 'pending' &&
+        incoming().referenceNumber is string && incoming().referenceNumber.size() <= 32 &&
+        incoming().companionId is string && incoming().companionId.size() <= 128;
+      allow update: if isValidId(requestId) && (
+        isAdmin() ||
+        (isSignedIn() && resource.data.clientId == request.auth.uid && incoming().status == 'cancelled' && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']))
+      );
+      allow delete: if isValidId(requestId) && isAdmin();
+    }
+
+    // Messages
+    match /messages/{messageId} {
+      allow get: if isValidId(messageId) && (
+        isAdmin() ||
+        (isSignedIn() && (resource.data.senderId == request.auth.uid || resource.data.recipientId == request.auth.uid))
+      );
+      allow list: if isAdmin() || (isSignedIn() && (resource.data.senderId == request.auth.uid || resource.data.recipientId == request.auth.uid));
+      allow create: if isValidId(messageId) && isSignedIn() &&
+        incoming().senderId == request.auth.uid &&
+        incoming().content is string && incoming().content.size() <= 3000;
+      allow update: if isValidId(messageId) && (
+        isAdmin() ||
+        (isSignedIn() && resource.data.recipientId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['isRead']))
+      );
+      allow delete: if isValidId(messageId) && isAdmin();
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow get, list: if isValidId(notificationId) && (isAdmin() || (isSignedIn() && resource.data.recipientId == request.auth.uid));
+      allow create: if isSignedIn();
+      allow update: if isValidId(notificationId) && (
+        isAdmin() ||
+        (isSignedIn() && resource.data.recipientId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['isRead']))
+      );
+      allow delete: if isValidId(notificationId) && (isAdmin() || (isSignedIn() && resource.data.recipientId == request.auth.uid));
+    }
+
+    // Reports
+    match /reports/{reportId} {
+      allow get, list: if isValidId(reportId) && isAdmin();
+      allow create: if isValidId(reportId) && isSignedIn() &&
+        incoming().reporterId == request.auth.uid &&
+        incoming().status == 'new' &&
+        incoming().reason is string && incoming().reason.size() <= 200;
+      allow update, delete: if isValidId(reportId) && isAdmin();
+    }
+
+    // Support Tickets
+    match /supportTickets/{ticketId} {
+      allow get, list: if isValidId(ticketId) && isAdmin();
+      allow create: if isValidId(ticketId) &&
+        incoming().name is string && incoming().name.size() <= 100 &&
+        incoming().email is string && incoming().email.size() <= 120 &&
+        incoming().message is string && incoming().message.size() <= 3000 &&
+        incoming().status == 'new';
+      allow update, delete: if isValidId(ticketId) && isAdmin();
+    }
+
+    // Payments (Architectural placeholder for future compliance)
+    match /payments/{paymentId} {
+      allow get, list: if isValidId(paymentId) && (isAdmin() || (isSignedIn() && resource.data.clientId == request.auth.uid));
+      allow create, update, delete: if isValidId(paymentId) && isAdmin();
+    }
+
+    // Media library
+    match /media/{mediaId} {
+      allow get, list: if isValidId(mediaId);
+      allow create, update, delete: if isValidId(mediaId) && isAdmin();
+    }
+
+    // Testimonials (genuine only)
+    match /testimonials/{testimonialId} {
+      allow get, list: if isValidId(testimonialId) && (resource.data.isActive == true || isAdmin());
+      allow create, update, delete: if isValidId(testimonialId) && isAdmin();
+    }
+
+    // Site settings
+    match /siteSettings/{settingId} {
+      allow get, list: if isValidId(settingId);
+      allow create, update, delete: if isValidId(settingId) && isAdmin();
+    }
+  }
+}
