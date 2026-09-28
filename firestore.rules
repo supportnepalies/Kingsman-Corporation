@@ -44,8 +44,6 @@ service cloud.firestore {
 
       allow list: if isAdmin();
 
-      // A normal user can ONLY create their own account
-      // with the "client" role.
       allow create: if isValidId(userId) &&
         (
           isAdmin() ||
@@ -139,8 +137,7 @@ service cloud.firestore {
         incoming().city is string &&
         incoming().city.size() <= 100;
 
-      allow update, delete: if isValidId(applicationId) &&
-        isAdmin();
+      allow update, delete: if isAdmin();
     }
 
 
@@ -267,8 +264,6 @@ service cloud.firestore {
           )
         );
 
-      // Users can create notifications for themselves.
-      // Admins can create notifications for anyone.
       allow create: if isValidId(notificationId) &&
         (
           isAdmin() ||
@@ -314,8 +309,7 @@ service cloud.firestore {
         incoming().reason is string &&
         incoming().reason.size() <= 200;
 
-      allow update, delete: if isValidId(reportId) &&
-        isAdmin();
+      allow update, delete: if isAdmin();
     }
 
 
@@ -326,7 +320,6 @@ service cloud.firestore {
       allow get, list: if isValidId(ticketId) &&
         isAdmin();
 
-      // Public contact/support form.
       allow create: if isValidId(ticketId) &&
         incoming().name is string &&
         incoming().name.size() <= 100 &&
@@ -336,8 +329,7 @@ service cloud.firestore {
         incoming().message.size() <= 3000 &&
         incoming().status == 'new';
 
-      allow update, delete: if isValidId(ticketId) &&
-        isAdmin();
+      allow update, delete: if isAdmin();
     }
 
 
