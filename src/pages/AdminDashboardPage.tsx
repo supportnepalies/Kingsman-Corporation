@@ -347,9 +347,12 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
       {/* Top Admin Bar */}
       <header className="bg-[#0e0e14] border-b border-[#dfb76c]/30 px-6 py-4 sticky top-0 z-30 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded bg-[#181824] border border-[#dfb76c] flex items-center justify-center text-[#dfb76c]">
-            <Shield className="w-4 h-4" />
-          </div>
+          <img
+            src="/src/assets/images/kingsman_crest_1790586928168.jpg"
+            alt="Kingsman Corporation"
+            referrerPolicy="no-referrer"
+            className="w-10 h-10 rounded-full object-cover border border-[#dfb76c] shadow-[0_0_12px_rgba(223,183,108,0.3)] shrink-0"
+          />
           <div>
             <span className="font-display font-bold text-white text-base tracking-wider block">
               KINGSMAN CORPORATION

@@ -33,10 +33,13 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, siteSettings }) =
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/5">
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded bg-[#151520] border border-[#dfb76c]/40 flex items-center justify-center">
-                <Crown className="w-5 h-5 text-[#dfb76c]" />
-              </div>
+            <div className="flex items-center gap-3.5">
+              <img
+                src="/src/assets/images/kingsman_crest_1790586928168.jpg"
+                alt="Kingsman Corporation Logo"
+                referrerPolicy="no-referrer"
+                className="w-12 h-12 rounded-full object-cover border border-[#dfb76c]/50 shadow-[0_0_15px_rgba(223,183,108,0.25)] shrink-0"
+              />
               <div>
                 <span className="font-display font-bold tracking-[0.2em] text-white text-lg block">
                   KINGSMAN

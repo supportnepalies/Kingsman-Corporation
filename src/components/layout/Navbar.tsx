@@ -46,13 +46,14 @@ export const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage }) => 
           onClick={() => handleNavClick('home')}
           className="flex items-center gap-3 text-left group cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-[#dfb76c] via-[#b88e3a] to-[#755518] p-0.5 shadow-[0_0_15px_rgba(223,183,108,0.25)] flex items-center justify-center">
-            <div className="w-full h-full bg-[#0d0d12] flex items-center justify-center">
-              <Crown className="w-5 h-5 text-[#dfb76c] group-hover:scale-110 transition-transform duration-300" />
-            </div>
-          </div>
+          <img
+            src="/src/assets/images/kingsman_crest_1790586928168.jpg"
+            alt="Kingsman Corporation Logo"
+            referrerPolicy="no-referrer"
+            className="w-11 h-11 rounded-full object-cover border border-[#dfb76c]/60 shadow-[0_0_18px_rgba(223,183,108,0.35)] group-hover:scale-105 transition-transform duration-300 shrink-0"
+          />
           <div>
-            <span className="font-display font-bold tracking-[0.2em] text-white text-base sm:text-lg block leading-tight">
+            <span className="font-display font-bold tracking-[0.2em] text-white text-base sm:text-lg block leading-tight group-hover:text-[#dfb76c] transition-colors">
               KINGSMAN
             </span>
             <span className="text-[10px] tracking-[0.35em] text-[#dfb76c] uppercase block font-medium">

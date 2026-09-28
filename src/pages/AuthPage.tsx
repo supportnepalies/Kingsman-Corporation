@@ -179,11 +179,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'login', onSuc
     <div className="min-h-screen bg-[#08080a] py-16 px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
       <div className="max-w-2xl w-full mx-auto space-y-8">
         {/* Crest */}
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-sm bg-gradient-to-br from-[#dfb76c] via-[#b88e3a] to-[#755518] p-0.5 mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(223,183,108,0.2)]">
-            <div className="w-full h-full bg-[#0d0d12] flex items-center justify-center">
-              <Crown className="w-6 h-6 text-[#dfb76c]" />
-            </div>
+        <div className="text-center space-y-3">
+          <div className="w-16 h-16 rounded-full border-2 border-[#dfb76c]/60 mx-auto overflow-hidden shadow-[0_0_25px_rgba(223,183,108,0.35)]">
+            <img
+              src="/src/assets/images/kingsman_crest_1790586928168.jpg"
+              alt="Kingsman Corporation Logo"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span className="text-[10px] tracking-[0.3em] text-[#dfb76c] uppercase block font-semibold">
             Member Portal

@@ -20,9 +20,14 @@ export const AgeGateModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4 animate-in fade-in duration-300">
       <div className="relative max-w-lg w-full bg-[#0d0d12] border border-[#dfb76c]/40 rounded-xl p-8 shadow-2xl text-center space-y-6">
-        {/* Crest */}
-        <div className="mx-auto w-16 h-16 rounded-full bg-[#181822] border border-[#dfb76c]/50 flex items-center justify-center text-[#dfb76c] shadow-[0_0_20px_rgba(223,183,108,0.2)]">
-          <ShieldAlert className="w-8 h-8" />
+        {/* Logo Crest */}
+        <div className="mx-auto w-20 h-20 rounded-full border-2 border-[#dfb76c]/60 shadow-[0_0_25px_rgba(223,183,108,0.4)] overflow-hidden">
+          <img
+            src="/src/assets/images/kingsman_crest_1790586928168.jpg"
+            alt="Kingsman Corporation"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover"
+          />
         </div>
 
         <div>

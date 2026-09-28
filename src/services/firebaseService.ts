@@ -1,4 +1,3 @@
-```typescript
 import {
   collection,
   doc,
@@ -1459,6 +1458,18 @@ export async function fetchMedia(): Promise<
     LOCAL_STORAGE_KEYS.MEDIA,
     [
       {
+        id: 'media-logo',
+        title:
+          'Official Brand Emblem Logo - Kingsman Corporation',
+        url:
+          '/src/assets/images/kingsman_logo_1790586914061.jpg',
+        type: 'image',
+        category: 'branding',
+        uploadedBy: 'admin',
+        createdAt:
+          '2026-09-28T00:00:00Z'
+      },
+      {
         id: 'media-1',
         title:
           'Hero Atmosphere - Indian Married Woman High-End Lounge',
@@ -1816,4 +1827,3 @@ export async function saveSiteSettings(
     );
   }
 }
-```
